@@ -2,6 +2,8 @@ package liqp.filters;
 
 import liqp.LValue;
 import liqp.TemplateContext;
+import liqp.filters.intempt.Base64_Decode;
+import liqp.filters.intempt.Base64_Encode;
 import liqp.parser.Flavor;
 
 import java.util.Arrays;
@@ -79,6 +81,8 @@ public abstract class Filter extends LValue {
         registerFilter(new Upcase());
         registerFilter(new Url_Decode());
         registerFilter(new Url_Encode());
+        registerFilter(new Base64_Decode());
+        registerFilter(new Base64_Encode());
 
         Filter nWSFilter = new Normalize_Whitespace();
         JEKYLL_FILTERS.put(nWSFilter.name, nWSFilter);
