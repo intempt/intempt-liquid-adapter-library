@@ -25,7 +25,7 @@ jobs:
 
       - name: Publish Liquid package
         if: startsWith(github.ref, 'refs/tags/adapter-v')
-        run: mvn -DVERSION=${GITHUB_REF#*refs/tags/adapter-v} --batch-mode -pl intempt-common-spring deploy
+        run: mvn -DVERSION=${GITHUB_REF#*refs/tags/adapter-v} --batch-mode deploy
         env:
           MAVEN_USERNAME: GH_USERNAME
           MAVEN_PASSWORD: GH_TOKEN
