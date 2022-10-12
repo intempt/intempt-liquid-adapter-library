@@ -2,11 +2,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>nl.big-o</groupId>
-    <artifactId>liqp</artifactId>
+    <groupId>com.intempt.common</groupId>
+    <artifactId>intempt-common-liquid</artifactId>
     <packaging>jar</packaging>
-    <version>0.8.3.3-SNAPSHOT</version>
-    <name>Liqp</name>
+    <version>${VERSION}</version>
+    <name>intempt-liquid-adapter</name>
     <description>A Java implementation of the Liquid templating engine backed up by an ANTLR
         grammar.
     </description>
@@ -50,13 +50,10 @@
     </developers>
 
     <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
         <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <id>github</id>
+            <name>GitHub Intempt's Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/intempt/common-library</url>
         </repository>
     </distributionManagement>
 
