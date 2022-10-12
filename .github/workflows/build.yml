@@ -1,0 +1,31 @@
+name: Publish package to the Maven Central Repository
+on:
+  push:
+    tags:
+      - "adapter-v*"
+
+env:
+  java-version: 11
+  aws-region: us-east-1
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  GH_USERNAME: ${{ secrets.GH_USERNAME }}
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set Up JDK ${{ env.java-version }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ env.java-version }}
+          server-id: github
+          server-username: GH_USERNAME
+          server-password: GH_TOKEN
+
+      - name: Publish Liquid package
+        if: startsWith(github.ref, 'refs/tags/adapter-v')
+        run: mvn -DVERSION=${GITHUB_REF#*refs/tags/adapter-v} --batch-mode -pl intempt-common-spring deploy
+        env:
+          MAVEN_USERNAME: GH_USERNAME
+          MAVEN_PASSWORD: GH_TOKEN
