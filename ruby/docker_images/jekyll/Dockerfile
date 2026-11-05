@@ -6,7 +6,7 @@ RUN mkdir -p /usr/local/etc \
     echo 'update: --no-document'; \
   } >> /etc/gemrc
 
-RUN apk update && apk add --no-cache \
+RUN apk update && apk upgrade --no-cache && apk add --no-cache \
   ruby \
   ruby-irb \
   ruby-json \
