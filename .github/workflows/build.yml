@@ -11,7 +11,7 @@ env:
   GH_USERNAME: ${{ secrets.GH_USERNAME }}
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: intempt-ubuntu-github-runner
     steps:
       - uses: actions/checkout@v2
 
