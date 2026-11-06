@@ -1,0 +1,10 @@
+version: 2
+updates:
+  # Base images are pinned by digest (INT-6457); Dependabot opens PRs to move the tag + digest.
+  - package-ecosystem: "docker"
+    directories:
+      - "/ruby/docker_images/jekyll"
+      - "/ruby/docker_images/liquid"
+    schedule:
+      interval: "weekly"
+    target-branch: "staging"
