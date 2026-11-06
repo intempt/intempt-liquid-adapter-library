@@ -14,7 +14,6 @@ env:
   aws-region: us-east-1
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
   GH_USERNAME: ${{ secrets.GH_USERNAME }}
-  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
 jobs:
   analyze:
@@ -52,8 +51,13 @@ jobs:
 
       # SonarCloud needs SONAR_TOKEN (and sonar.organization); the repo has no token, so the
       # scan only runs when one is configured instead of failing every build.
+      - name: Check for a Sonar token
+        id: sonar
+        run: echo "configured=${{ secrets.SONAR_TOKEN != '' }}" >> "$GITHUB_OUTPUT"
+
       - name: Analyze
-        if: ${{ env.SONAR_TOKEN != '' }}
+        if: steps.sonar.outputs.configured == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=intempt_common-library
