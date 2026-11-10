@@ -18,7 +18,7 @@ env:
 jobs:
   analyze:
     name: analyze
-    runs-on: ubuntu-latest
+    runs-on: intempt-ubuntu-github-runner
     steps:
       - uses: actions/checkout@v2
         with:
@@ -33,21 +33,31 @@ jobs:
           server-password: GH_TOKEN
 
       - name: Cache SonarCloud packages
-        uses: actions/cache@v1
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
       - name: Cache Maven packages
-        uses: actions/cache@v1
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build and analyze
+      - name: Build and test
+        run: mvn -B verify
+
+      # SonarCloud needs SONAR_TOKEN (and sonar.organization); the repo has no token, so the
+      # scan only runs when one is configured instead of failing every build.
+      - name: Check for a Sonar token
+        id: sonar
+        run: echo "configured=${{ secrets.SONAR_TOKEN != '' }}" >> "$GITHUB_OUTPUT"
+
+      - name: Analyze
+        if: steps.sonar.outputs.configured == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=intempt_common-library
+        run: mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=intempt_common-library
