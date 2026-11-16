@@ -5,6 +5,7 @@ import liqp.TemplateContext;
 import liqp.nodes.LNode;
 
 import java.io.File;
+import java.io.IOException;
 
 public class Include extends Tag {
 
@@ -23,11 +24,13 @@ public class Include extends Tag {
             File includeResourceFile;
             String includesDirectory = (String) context.get(INCLUDES_DIRECTORY_KEY);
 
-            if (includesDirectory != null) {
-                includeResourceFile = new File(includesDirectory, includeResource + extension);
+            if (includesDirectory == null) {
+                includesDirectory = context.parseSettings.flavor.snippetsFolderName;
             }
-            else {
-              includeResourceFile = new File(context.parseSettings.flavor.snippetsFolderName, includeResource + extension);
+            includeResourceFile = new File(includesDirectory, includeResource + extension);
+
+            if (!isInside(new File(includesDirectory), includeResourceFile)) {
+                throw new IOException("include outside the includes directory: " + includeResource);
             }
 
             Template template = Template.parse(includeResourceFile, context.parseSettings, context.renderSettings);
@@ -47,5 +50,10 @@ public class Include extends Tag {
                 return "";
             }
         }
+    }
+
+    /** A {@code ../} or symlink in the include name must not reach files outside the includes directory. */
+    private static boolean isInside(File directory, File file) throws IOException {
+        return file.getCanonicalPath().startsWith(directory.getCanonicalPath() + File.separator);
     }
 }
